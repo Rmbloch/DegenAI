@@ -16,15 +16,17 @@ class CryptoAPI(AbstractAPI):
   headers = {
     "apikey": CRYPTO_API_KEY,
   }
+  coin_list_params = {
+    "limit": 10,
+    "order": "created_time.desc", 
+    "select": "*", 
+    "bonding_curve_completed": "is.true"
+  }
 
   def __init__(self):
     super().__init__(CRYPTO_API_BASE_URL, CRYPTO_API_KEY)
 
   def get_coin_list(self):
     return self.get(endpoint=self.token_endpoint, 
-                    params={
-                      "limit": 10,
-                      "order": "created_time.desc", 
-                      "select": "*", 
-                      "bonding_curve_completed": "is.true"},
+                    params=self.coin_list_params,
                     headers=self.headers)
