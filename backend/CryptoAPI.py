@@ -9,17 +9,13 @@ load_dotenv()
 CRYPTO_API_BASE_URL = 'https://utvegumaxuxnpmzzmimk.supabase.co/'
 CRYPTO_API_KEY = os.getenv('CRYPTO_API_KEY')
 
-""" options:
-limit=10&order=created_time.desc&select=*&bonding_curve_completed=is.true
-"""
-
 class CryptoAPI(AbstractAPI):
   token_endpoint = 'rest/v1/tokens'
   headers = {
     "apikey": CRYPTO_API_KEY,
   }
   coin_list_params = {
-    "limit": 10,
+    "limit": 20,
     "order": "created_time.desc", 
     "select": "*", 
     "bonding_curve_completed": "is.true"
