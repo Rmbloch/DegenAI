@@ -2,4 +2,5 @@ from CryptoAPI import CryptoAPI
 
 cryptoAPI = CryptoAPI()
 response = cryptoAPI.get_coin_list()
-print(cryptoAPI.parse_response(response))
+for i, coin in enumerate(response):
+  print(f"{i:02d}: {coin}")
