@@ -3,7 +3,7 @@ import HomePage from "../home-page/HomePage";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
+    { title: "DegenAI Home Page" },
     { name: "description", content: "Welcome to React Router!" },
   ];
 }
