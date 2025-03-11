@@ -2,6 +2,10 @@
 
 from requests import get, post, put, delete
 
+class APIError(Exception):
+  def __init__(self, message):
+    self.message = message
+
 class AbstractAPI:
   base_url = None
   api_key = None
