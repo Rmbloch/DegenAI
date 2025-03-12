@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Coin Sentiment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            margin: 20px 0;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Top 5 Crypto Coins by Sentiment</h1>
+    
+    <!-- Button to manually refresh data -->
+    <button onclick="updateCoinData()">Refresh Coins</button>
+    
+    <table id="coinsTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Symbol</th>
+                <th>Price</th>
+                <th>Sentiment Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        // Function to fetch the data and update the table
+        function updateCoinData() {
+            fetch('/api/coins')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Fetched data:", data); // Debug log to verify if new data is fetched
+
+                    const tableBody = document.querySelector("#coinsTable tbody");
+                    tableBody.innerHTML = "";  // Clear the table before adding new rows
+
+                    data.forEach(coin => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${coin.name}</td>
+                            <td>${coin.symbol}</td>
+                            <td>${coin.price}</td>
+                            <td>${coin.sentiment_score}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    const tableBody = document.querySelector("#coinsTable tbody");
+                    tableBody.innerHTML = "<tr><td colspan='4'>Error fetching data</td></tr>";
+                });
+        }
+
+        // Initial call to populate data immediately when the page loads
+        updateCoinData();
+
+        // Fetch data every 10 seconds to automatically refresh the table
+        setInterval(updateCoinData, 10000);
+    </script>
+</body>
+</html>
