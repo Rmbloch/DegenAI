@@ -1,3 +1,4 @@
+import WebScraperAPI
 from AbstractAPI import AbstractAPI, APIError
 import os
 from dotenv import load_dotenv
@@ -15,6 +16,7 @@ class SentimentAPI(AbstractAPI):
   model = ""
   role = ""
   temp = 0
+  web_scraper_api = None
 
   header = {
     "Authorization": f"Bearer {GPT_API_KEY}",
@@ -40,6 +42,7 @@ class SentimentAPI(AbstractAPI):
     self.model = model
     self.role = role
     self.temp = temp
+    self.web_scraper_api = WebScraperAPI.WebScraperAPI()
 
   def _test(self):
     test_data = self._create_data("Say this is a test!")
@@ -68,12 +71,18 @@ class SentimentAPI(AbstractAPI):
 
     return response.json()['choices'][0]['message']['content']
 
+  def _fetch_page_text(self, url, max_length=8000):
+    return self.web_scraper_api.fetch_page_text(url, max_length=max_length)
+
   def get_coin_sentiment(self, coin):
     coin_name = coin.name
     coin_symbol = coin.symbol
     coin_url = f"https://pump.fun/coin/{coin.url}"
 
-    message = f"Take a look at the cryptocurrency {coin_name} ({coin_symbol}) from {coin_url}. Rate it out of 10 based on its social media presence. Just provide the rating with no other text."
+    # Fetch the page text
+    page_data = self._fetch_page_text(coin_url)
+
+    message = f"Take a look at the cryptocurrency {coin_name} ({coin_symbol}). Rate it out of 10 based on its social media presence. Just provide the rating with no other text. The page text is as follows:\n\n{page_data}\n\n"
 
     return self._get_response(message)
 # test
@@ -83,6 +92,10 @@ if __name__ == '__main__':
   cryptoAPI = CryptoAPI.CryptoAPI()
   clist = cryptoAPI.get_coin_list()
   coin = clist[0]
-  print(coin)
-  response = sentimentAPI.get_coin_sentiment(coin)
-  print(response)
+
+  coin_url = f"https://pump.fun/coin/{coin.url}"
+  page_data = sentimentAPI._fetch_page_text(coin_url)
+  # print(page_data)
+
+  get_sentiment = sentimentAPI.get_coin_sentiment(coin)
+  print(get_sentiment)
