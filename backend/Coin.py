@@ -1,8 +1,9 @@
 class Coin:
-    def __init__(self, name, symbol, price):
+    def __init__(self, name, symbol, price, url):
         self.name = name
         self.symbol = symbol
         self.price = price
+        self.url = url
 
     def __str__(self):
         return f"{self.name} ({self.symbol}): {self.price}"
