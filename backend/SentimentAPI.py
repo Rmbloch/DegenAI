@@ -37,7 +37,7 @@ class SentimentAPI(AbstractAPI):
       "temperature": temp
     }
 
-  def __init__(self, model="gpt-4o", role="user", temp=0.7):
+  def __init__(self, model="gpt-4o-mini", role="user", temp=0.7):
     super().__init__(GPT_BASE_URL, GPT_API_KEY)
     self.model = model
     self.role = role
@@ -72,7 +72,8 @@ class SentimentAPI(AbstractAPI):
     return response.json()['choices'][0]['message']['content']
 
   def _fetch_page_text(self, url, max_length=8000):
-    return self.web_scraper_api.fetch_page_text(url, max_length=max_length)
+    # return self.web_scraper_api.fetch_page_text(url, max_length=max_length)
+    return self.web_scraper_api.fetch_page_text(url, max_length=max_length, wait_time=1)
 
   def get_coin_sentiment(self, coin):
     coin_name = coin.name
@@ -82,7 +83,16 @@ class SentimentAPI(AbstractAPI):
     # Fetch the page text
     page_data = self._fetch_page_text(coin_url)
 
-    message = f"Take a look at the cryptocurrency {coin_name} ({coin_symbol}). Rate it out of 10 based on its social media presence. Just provide the rating with no other text. The page text is as follows:\n\n{page_data}\n\n"
+    # Fetch links
+    links = self.web_scraper_api.get_links(coin)
+
+    # Get link data
+    for link in links:
+      page_data += "\n\n"
+      page_data += self._fetch_page_text(link)
+
+    # message = f"Take a look at the cryptocurrency {coin_name} ({coin_symbol}). Rate it out of 10 based on its social media presence. Just provide the rating with no other text. The page text is as follows:\n\n{page_data}\n\n"
+    message = f"Take a look at the cryptocurrency {coin_name} ({coin_symbol}). Rate it from 0 to 9 based on its online. Just provide the rating with no other text. The page text is as follows:\n\n{page_data}"
 
     return self._get_response(message)
 # test
