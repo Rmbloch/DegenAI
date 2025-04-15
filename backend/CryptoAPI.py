@@ -40,7 +40,7 @@ class CryptoAPI(AbstractAPI):
     coin_object_list = [coin_lambda(coin) for coin in coin_list]
     return self._filter_coins(coin_object_list)
 
-  def get_coin_list(self):
+  def get_coin_list(self) -> list[Coin]:
     response = self.get(endpoint=self.token_endpoint, 
                     params=self.coin_list_params,
                     headers=self.headers)
