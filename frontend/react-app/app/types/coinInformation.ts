@@ -1,6 +1,7 @@
 
 
 export interface CoinInformation{
+    sentiment: number,
     id: number;
     price: number;
     marketCap: number;

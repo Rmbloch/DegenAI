@@ -15,6 +15,7 @@ interface CoinManagerProps {
 // test coins
 const testCoin: CoinData = {
     coinInformation: {
+        sentiment: 0.5,
         id: 0,
         price: 89601.75,
         marketCap: 1774115397519,
