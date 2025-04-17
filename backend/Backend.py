@@ -36,6 +36,8 @@ def get_top_coins():
         "name": coin.name,
         "symbol": coin.symbol,
         "price": coin.price,
+        "url": coin.url,
+        "image_url": coin.image_url,
         "sentiment_score": getattr(coin, "sentiment_score", 0)
     } for coin in coin_data])
 
