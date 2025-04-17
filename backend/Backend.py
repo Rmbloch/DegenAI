@@ -22,7 +22,7 @@ def refresh_data():
         try:
             coins = crypto_api.get_coin_list()
             for coin in coins:
-                coin.sentiment_score = round(random.uniform(0, 1), 2) # Sample numbers until sentiment part is ready
+                coin.sentiment_score = sentiment_api.get_coin_sentiment(coin)
             coin_data = sorted(coins, key=lambda x: getattr(x, "sentiment_score", 0), reverse=True)[:5]
             print("Data refreshed.")
         except Exception as e:
