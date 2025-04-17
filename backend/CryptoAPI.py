@@ -36,7 +36,7 @@ class CryptoAPI(AbstractAPI):
   # input: list of coins in JSON from API
   # output: list of coin objects
   def _get_coin_objects(self, coin_list):
-    coin_lambda = lambda coin: Coin(coin['name'], coin['symbol'], coin['price_in_usd'], coin['address'])
+    coin_lambda = lambda coin: Coin(coin['name'], coin['symbol'], coin['price_in_usd'], coin['address'], coin['imageUrl'])
     coin_object_list = [coin_lambda(coin) for coin in coin_list]
     return self._filter_coins(coin_object_list)
 
