@@ -23,7 +23,6 @@ class WebScraperAPI(AbstractAPI):
   def __init__(self):
     super().__init__(base_url="", api_key=None)  # No API key needed for local browser scraping
 
-  
   def fetch_bs4_text(self, url, max_length=2000):
     try:
       response = requests.get(url)

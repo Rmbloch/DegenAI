@@ -2,7 +2,7 @@
 import { type CoinData } from "../types/coinData";
 import Coin from "../components/Coin";
 import CoinList from "../home-page/CoinList";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 
 // test resources
@@ -12,23 +12,7 @@ interface CoinManagerProps {
     initialCoins?: CoinData[];
 }
 
-// test coins
-const testCoin: CoinData = {
-    coinInformation: {
-        sentiment: 0.5,
-        id: 0,
-        price: 89601.75,
-        marketCap: 1774115397519,
-        circulating: 19833190,
-        maxSupply: 21000000,
-        priceChange: new Map<string, number>,
-        twitter: "https://x.com/?lang=en",
-        coinBaseLink: "https://www.coinbase.com/",
-        name: "Bitcoin"
-    },
-  
-    coinImage: cryptoLogo
-  }
+
 
 const CoinManager = ({ initialCoins = [] }: CoinManagerProps) => {
 
@@ -49,12 +33,71 @@ const CoinManager = ({ initialCoins = [] }: CoinManagerProps) => {
         setCoins(prev => prev.filter(coin => coin.coinInformation.id !== coinData.coinInformation.id))
     };
 
+    const updateCoins = (coinData: CoinData[]) => {
+        setCoins(coinData);
+    };
+
+    // wrapping this in a useEffect to poll the API every 10 seconds
+    useEffect(() => {
+        // setting some debouncing vars
+        let isMounted = true;
+        let timeoutId: NodeJS.Timeout;
+
+        // poll data function. sets the coins list every 10 seconds
+        const pollData = () => {
+            if (!isMounted) return;
+
+            fetch('http://localhost:5000/api/coins')
+            .then(response => response.json())
+            .then(data => {
+                if (!isMounted) return;
+                
+                // filter out duplicate URLs
+                // urls will ALWAYS be unique.
+                const seenUrls = new Set<string>();
+                const newCoinData: CoinData[] = [];
+
+                data.forEach((coin: any) => {
+                    if (!seenUrls.has(coin.url)) {
+                        seenUrls.add(coin.url);
+                        newCoinData.push({
+                            coinInformation: {
+                                sentiment: coin.sentiment_score,
+                                id: coin.url,
+                                name: coin.name,
+                                url: "https://pump.fun/coin/" + coin.url,
+                                symbol: coin.symbol,
+                                price: 0,
+                            },
+                            coinImage: coin.image_url
+                        });
+                    }
+                });
+
+                setCoins(newCoinData);
+            })
+            .catch(console.error)
+            .finally(() => {
+                if (isMounted) {
+                    timeoutId = setTimeout(pollData, 10000);
+                }
+            });
+        };
+
+        pollData();
+
+        return () => {
+            isMounted = false;
+            clearTimeout(timeoutId);
+        };
+    }, []); // no dependencies, so this runs once on mount
     return (
         <>
             <CoinList coins={coins}/>
-            <button onClick={() => addCoin(testCoin)}>Add Test Coin</button>
         </>
     );
 }
+
+
 
 export default CoinManager;

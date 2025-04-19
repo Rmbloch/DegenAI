@@ -9,35 +9,53 @@ interface CoinListProps {
 
 const CoinList = ({ coins }: CoinListProps)  => {
     return(
-        <div className="coins-list flex flex-col gap-4 items-center bg-slate-800 p-4 w-full">
-            <div className="coins-list__title text-4xl pb-0 font-light max-w-4xl text-white border-slate-700 w-full text-center">
-                <label>"Best" Coins</label>
+        <div className="coins-list flex flex-col gap-4 items-center bg-white p-4 w-full max-w-[calc(100%-300px)] mx-auto">
+            <div className="coins-list__title font-['Molle'] text-4xl pb-0 max-w-xl text-black bg-none w-full text-center">
+                <label className="inline-block align-bottom leading-none">Degen Ai</label>
             </div>
             { coins.map((coin, index) => (
                 <div 
                     key={coin.coinInformation.id}
-                    className="coin pl-0 h-[100px] w-full border-1 border-slate-500 max-w-4xl flex items-center divide-x-2 outline-sky-500 divide-slate-500 rounded-sm shadow-xl px-6 dark:bg-slate-600"
+                    className="coin pl-0 h-[100px] w-full max-w-4x flex items-center divide-black rounded-sm shadow-lg px-6 coin-entering"
                 >
-                    <div className="coin__rank flex flex-col justify-center items-center h-full px-5 bg-slate-500">
-                        <label className="items-center text-2xl italic">
+                    <div className="coin__rank flex flex-col justify-center items-center h-full p-5 w-1 bg-black">
+                        <label className="items-center text-2xl text-white italic">
                             {index+1}
                         </label>
                     </div>
-                    <img className="ml-3 size-12 rounded-lg" src={coin.coinImage}/>
+                    <img className="ml-3 mr-0 size-20 rounded-full drop-shadow-lg" src={coin.coinImage}/>
                     
                     {/* name */}
                     <div className="h-full flex-1 flex flex-col items-center justify-center px-4">
+                        {/*
                         <div className="text-slate-300 italic">
                             <h4>
                                 name
                             </h4>
                         </div>
-                        <label className="text-2xl line-clamp-2 text-center">
+                        */}
+                        <label className="text-2xl text-black line-clamp-2 text-center">
                             {coin.coinInformation.name}
+                        </label>
+                        <div className="text-gray-500 italic">
+                            <h4>
+                                {coin.coinInformation.symbol}
+                            </h4>
+                        </div>
+                    </div>
+
+                    <div className="h-full w-32 flex flex-col items-center justify-center">
+                        <div className="text-gray-500 italic">
+                            <h4>
+                                sentiment
+                            </h4>
+                        </div>
+                        <label className="text-center font-bold text-black">
+                             {coin.coinInformation.sentiment}
                         </label>
                     </div>
 
-                    {/* price */}
+                    {/* price 
                     <div className="h-full w-32 flex flex-col items-center justify-center">
                         <div className="text-slate-300 italic">
                             <h4>
@@ -48,8 +66,10 @@ const CoinList = ({ coins }: CoinListProps)  => {
                             ${formatNumber(coin.coinInformation.price)}
                         </label>
                     </div>
+                    */}
+                    
 
-                    {/* market cap */}
+                    {/* market cap 
                     <div className="h-full w-32 flex flex-col items-center justify-center">
                         <div className="text-slate-300 italic">
                             <h4>
@@ -60,8 +80,9 @@ const CoinList = ({ coins }: CoinListProps)  => {
                             ${formatNumber(coin.coinInformation.marketCap)}
                         </label>
                     </div>
+                    */}
 
-                    {/* circulating */}
+                    {/* circulating 
                     <div className="h-full w-32 flex flex-col items-center justify-center">
                         <div className="text-slate-300 italic">
                             <h4>
@@ -72,8 +93,9 @@ const CoinList = ({ coins }: CoinListProps)  => {
                             ${formatNumber(coin.coinInformation.circulating)}
                         </label>
                     </div>
+                    */}
 
-                    {/* max supply */}
+                    {/* max supply 
                     <div className="h-full w-32 flex flex-col items-center justify-center">
                         <div className="text-slate-300 italic">
                             <h4>
@@ -84,17 +106,17 @@ const CoinList = ({ coins }: CoinListProps)  => {
                             ${formatNumber(coin.coinInformation.maxSupply)}
                         </label>
                     </div>
+                    */}
 
                      {/* socials */}
                      <div className="h-full w-32 flex flex-col items-center justify-center">
-                        <div className="text-slate-300 italic">
+                        <div className="text-gray-500 italic">
                             <h4>
-                                socials
+                                link
                             </h4>
                         </div>
-                        <div className="flex flex-row gap-2 text-center text-white underline font-light text-sm">
-                            <a href={coin.coinInformation.twitter}>twitter</a>
-                            <a href={coin.coinInformation.coinBaseLink}>coinbase</a>
+                        <div className="flex flex-row gap-2 text-center text-black underline font-light text-sm">
+                            <a href={coin.coinInformation.url}>pump.fun link</a>
                         </div>
                     </div>
                 </div>
