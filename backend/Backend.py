@@ -4,8 +4,11 @@ from SentimentAPI import SentimentAPI
 import threading
 import time
 import random
+import bisect
+from flask_cors import CORS
 
 app = Flask(__name__, template_folder='../templates')
+CORS(app)
 
 crypto_api = CryptoAPI()
 sentiment_api = SentimentAPI()
@@ -19,11 +22,24 @@ def refresh_data():
     global coin_data
     while True:
         print("Refreshing coin data...")
+        # iterate through every coin
         try:
             coins = crypto_api.get_coin_list()
+            # init all the sentiment scores to 0
             for coin in coins:
-                coin.sentiment_score = sentiment_api.get_coin_sentiment(coin)
-            coin_data = sorted(coins, key=lambda x: getattr(x, "sentiment_score", 0), reverse=True)[:5]
+                coin.sentiment_score = 0
+            
+            # coins = coins[:5]
+            for coin in coins:
+                raw_sentiment_score = sentiment_api.get_coin_sentiment(coin)
+                try:
+                    coin.sentiment_score = raw_sentiment_score
+                except (ValueError, TypeError):
+                    coin.sentiment_score = 0
+                print("Adding judged coin to list")
+                coin_data.append(coin)
+                coin_data.sort(key=lambda x: x.sentiment_score, reverse=True)
+                
             print("Data refreshed.")
         except Exception as e:
             print(f"Error refreshing data: {e}")
