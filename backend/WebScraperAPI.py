@@ -22,6 +22,22 @@ class WebScraperAPIError(APIError):
 class WebScraperAPI(AbstractAPI):
   def __init__(self):
     super().__init__(base_url="", api_key=None)  # No API key needed for local browser scraping
+    self.driver = self.init_webdriver()
+
+
+  def init_webdriver(self):
+    options = Options()
+    options.add_argument("--headless")  # Run Chrome in headless mode
+    options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--window-size=1920,1080")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_argument(
+      "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+      "AppleWebKit/537.36 (KHTML, like Gecko) "
+      "Chrome/122.0.0.0 Safari/537.36"
+    )
+    return webdriver.Chrome(options=options)
 
   def fetch_bs4_text(self, url, max_length=2000):
     try:
@@ -36,24 +52,11 @@ class WebScraperAPI(AbstractAPI):
       raise WebScraperAPIError(f"Unexpected error fetching {url}: {e}")
 
   def fetch_page_text(self, url, max_length=2000, wait_time=0):
-    options = Options()
-    options.add_argument("--headless")  # Run Chrome in headless mode
-    options.add_argument("--disable-gpu")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--window-size=1920,1080")
-    options.add_argument("--disable-blink-features=AutomationControlled")
-    options.add_argument(
-      "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-      "AppleWebKit/537.36 (KHTML, like Gecko) "
-      "Chrome/122.0.0.0 Safari/537.36"
-    )
-
     try:
-      driver = webdriver.Chrome(options=options)
-      driver.get(url)
+      self.driver.get(url)
       time.sleep(wait_time)  # Wait for JS to render (adjust as needed)
 
-      page_source = driver.page_source
+      page_source = self.driver.page_source
       soup = BeautifulSoup(page_source, "html.parser")
       text = soup.get_text(separator="\n", strip=True)
       return text[:max_length]
@@ -64,7 +67,7 @@ class WebScraperAPI(AbstractAPI):
       raise WebScraperAPIError(f"Unexpected error fetching {url}: {e}")
     finally:
       try:
-        driver.quit()
+        self.driver.quit()
       except:
         pass
   
